@@ -16,6 +16,7 @@ The project focuses on separating data, logic, and presentation to create a scal
 
 ---
 
+<img width="1271" height="721" alt="Clothing" src="https://github.com/user-attachments/assets/05015816-be10-4266-ab70-6ce955fce379" />
 
 
 ---
