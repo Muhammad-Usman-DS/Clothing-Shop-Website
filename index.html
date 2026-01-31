@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <!-- Applied Tailwind CSS via CDN 
+    All the styles of the containers/elements are added through Tailwind -->
+   <script src="https://cdn.tailwindcss.com"></script>
+
+   <title>Best Clothing Store</title>
+
+   <!-- needed for toaster -->
+   <style>
+   @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+   }
+
+   @keyframes toastFadeOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to   { opacity: 0; transform: translateY(12px) scale(0.96); }
+   }
+
+   .toast-enter {
+      animation: toastSlideIn 0.3s ease-out forwards;
+   }
+
+   .toast-exit {
+      animation: toastFadeOut 0.25s ease-in forwards;
+   }
+   </style>
+
+
+
+
+</head>
+
+<body class="min-h-screen flex flex-col bg-slate-100">
+
+   <!-- Header -- visible on all views -->
+    <header class="bg-[#0a1a33] text-white shadow-sm">
+
+      <div class="max-w-6xl mx-auto px-2 py-4 flex items-center justify-between gap-2">
+
+         <!-- Title of the the header at the left -->
+         <button id="logoButton" data-view="home" class="text-xl font-bold text-white">
+            <img src="images/logo.png" alt="Product Viewer Logo" class="h-20 w-auto object-contain" />
+         </button>
+
+         <!-- Navigation bar at the header -->
+         <nav class="flex items-center gap-20">
+            <button id="navHome" data-view="home" class="text-base font-bold text-white px-2 py-1 rounded-md hover:bg-slate-300 hover:text-black">
+                Home       
+            </button>
+            <p>|</p>
+            <button id="navBrowse" data-view="browse" class="text-base font-bold text-white px-2 py-1 rounded-md hover:bg-slate-300 hover:text-black">
+                Browse       
+            </button>
+            <p>|</p>
+            <button id="navAbout" class="text-base font-bold text-white px-2 py-1 rounded-md hover:bg-slate-300 hover:text-black">
+                About
+            </button>
+
+         </nav>
+
+         <!-- Cart indicator -->
+         <button id="navCart" class="text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded">
+            Cart (<span id="cartCount">0</span>)
+         </button>
+
+      </div>
+   </header>
+
+
+
+
+
+
+
+
+
+
+
+
+   <!-- Main content area, All the views are here: (Home, Browse[has 2 sections - filter and results], Product View, Shopping Cart view, About View)  -->
+    <main class="flex-1 max-w-6xl mx-auto w-full px-4 space-y-6">
+
+
+
+
+      <!--------------------------------------------------------------- HOME VIEW ---------------------------------------------------------------------->
+      <article id="home" class="relative overflow-visible -my-6 pb-12">
+
+         <!-- full-width background image -->
+         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-full bg-cover bg-center opacity-90 -z-10"
+            style="background-image: url('images/background.jpg');">
+         </div>
+
+         <!-- inner wrapper- put in because it keeps the visual spacing from header/footer -->
+         <div class="pt-6 pb-6 space-y-6">
+
+            <!-- picture - top main -->
+            <div class="relative left-1/2 -translate-x-1/2 w-screen">
+               <img src="images/mainphoto.jpg"
+                  alt="Clothing collections"
+                  class="w-screen h-80 object-cover" />
+            </div>
+
+            <!-- centered content (heading and cards both ) -->
+            <div class="max-w-6xl mx-auto w-full px-4 space-y-6">
+               <h2 class="text-3xl font-semibold text-slate-800 text-center bg-slate-200 rounded-md py-2 px-4 shadow-sm">
+                  Shop by Category
+               </h2>
+            </div>
+
+            <!-- template for category tiles -->
+                     <template id="homeCategoryCard">
+                        <button class ="categoryCard transform transition duration-200 hover:scale-105">
+                           <div class="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition">
+
+                              <!-- image fills top 3/4 -->
+                              <div class="cardImg h-40 w-full bg-slate-200 flex items-center justify-center text-xs text-slate-500">
+                                 image
+                              </div>
+
+                              <!-- category name at bottom -->
+                              <p class="text-sm font-semibold text-slate-800 text-center py-3">
+                              Category name
+                              </p>
+                           </button>
+                        </div>
+                     </template>
+
+
+            <!-- category grid -->
+            <div id="homeCategories" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+               <!-- Clone the template and insert the clones here- After Fetching ofc -->
+
+            </div>
+
+
+         </div>
+
+      </article>
+
+      
+
+
+      <!----------------------------------------------------------Browse View (initially hidden)-------------------------------------------------------->
+      <article id="browse" class="hidden">
+
+         <div class="max-w-6xl mx-auto w-full px-4 py-6 grid grid-cols-1 md:grid-cols-4 gap-6">
+
+         <!-- filters on the left (will take time - alot to link ) -->
+         <section id="filters" class="md:col-span-1 bg-white rounded-lg shadow p-4 space-y-6">
+
+            <h2 class="text-lg font-semibold text-slate-800">Filters</h2>
+
+            <!-- category -->
+            <div>
+               <label class="block text-sm font-semibold text-slate-700 mb-1">Category</label>
+
+               <div id="filterCategory" class="space-y-1">
+                  <!-- will insert checkboxes here -->
+               </div>
+
+               <button id="selectAllCategories"
+                     class="mt-2 text-xs px-2 py-1 bg-slate-200 rounded hover:bg-slate-300 transition">
+                  Select All Categories
+               </button>
+            </div>
+
+            <!-- size -->
+            <div>
+               <p class="text-sm font-semibold text-slate-700 mb-1">Size</p>
+
+               <div id="filterSizeGroup" class="space-y-1">
+                  <!-- will insert checkboxes here too -->
+               </div>
+
+               <button id="selectAllSizes"
+                     class="mt-2 text-xs px-2 py-1 bg-slate-200 rounded hover:bg-slate-300 transition">
+                  Select All Sizes
+               </button>
+            </div>
+
+
+            <!-- gender-->
+            <div>
+               <label class="block text-sm font-semibold text-slate-700 mb-1">Gender</label>
+
+               <select id="filterGender" class="w-full border rounded p-2 text-sm">
+                  <option value="">Any</option>
+                  <option value="womens">Women</option>
+                  <option value="mens">Men</option>
+               </select>
+            </div>
+
+
+            <!-- color -->
+            <div>
+               <label class="block text-sm font-semibold text-slate-700 mb-1">Color</label>
+
+               <div id="filterColorGroup" class="space-y-1">
+                  <!--  color checkboxes here -->
+               </div>
+
+               <button id="selectAllColors"
+                     class="mt-2 text-xs px-2 py-1 bg-slate-200 rounded hover:bg-slate-300 transition">
+                  Select All Colors
+               </button>
+            </div>
+
+
+            <!-- reset-->
+            <button id="resetFilters"
+               class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-2 rounded">
+               Reset Filters
+            </button>
+
+         </section>
+
+
+         <!-- results section on the right-->
+         <section class="md:col-span-3 space-y-4">
+
+            <!-- sort and dropdown results -->
+            <div class="flex items-center justify-end">
+               <div>
+                  <label class="block text-sm font-semibold text-slate-700 mb-1">Sort Products By:</label>
+                  <select id="filterSort" class="border rounded p-2 text-sm">
+                     <option value="nameAsc">Name (A → Z)</option>
+                     <option value="nameDesc">Name (Z → A)</option>
+                     <option value="priceLow">Price (Low → High)</option>
+                     <option value="priceHigh">Price (High → Low)</option>
+                  </select>
+               </div>
+            </div>
+
+            <!-- heading -->
+            <h2 class="text-xl font-semibold text-slate-800">Results by Filter</h2>
+
+            <!-- filter tags bar (x button removes filter) -->
+            <div id="activeFilters"
+               class="flex flex-wrap gap-2 text-sm text-slate-700">
+               <span class="text-slate-500 italic">No filters applied</span>
+               <!-- JS will insert tags like:
+                  <div class="bg-slate-200 px-2 py-1 rounded flex items-center gap-1">
+                     Tops
+                     <button class="removeFilter text-red-600 font-bold">×</button>
+                  </div>
+               -->
+            </div>
+            <!-- match count summary -->
+            <div id="resultsSummary" class="text-sm text-slate-700 mt-1">
+               Total matches found: 0
+            </div>
+
+
+            <!-- product results-->
+            <div id="browseResultsGrid"
+               class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+               <!-- will put product cards here-->
+            </div>
+
+            <!-- Product card Template -->
+            <!-- template for individual product tiles -->
+            <template id="browseProductCard">
+
+               <button class="productCard bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden text-left w-full relative">
+
+                  <!-- product image (top half) -->
+                  <div class="w-full h-40 bg-slate-200">
+                     <img class="productImg w-full h-full object-cover" src="" alt="">
+                  </div>
+
+                  <!-- product info (bottom half) -->
+                  <div class="p-3 flex flex-col justify-between h-28">
+
+                     <!-- Name/title -->
+                     <p class="productName text-sm font-semibold text-slate-800">
+                        Product Name
+                     </p>
+
+                     <!-- Price -->
+                     <p class="productPrice text-sm text-slate-700">
+                        $0.00
+                     </p>
+
+                     <!-- Brand / Secondary Name (if needed) -->
+                     <p class="productBrand text-xs text-slate-500">
+                        Brand / Category
+                     </p>
+
+                     
+                  </div>
+                  <!-- Add-to-cart button (should be on BOTTOM RIGHT CORNER) -->
+                  <div class="addToCartBtn absolute bottom-2 right-2 
+                                    bg-gray-600 text-white text-xs font-semibold 
+                                    px-2 py-1 rounded 
+                                    hover:bg-gray-200 hover:text-gray-600 transition
+                                    shadow-sm">
+                        + Add to Cart
+                  </div>
+
+               </button>
+
+            </template>
+
+
+         </section>
+
+         </div>
+
+      </article>
+
+
+
+
+      <!-----------------------------------------------------------Single Product View (initially hidden)----------------------------------------------->
+      <article id="singleproduct" class="hidden px-4 py-6 max-w-6xl mx-auto">
+
+         <!-- breadcrumb, not important . maybe just leave it if i cant do -->
+         <nav id="spBreadcrumb" class="text-sm text-slate-600 mb-4 space-x-1">
+
+            <span id="bcHome"
+                  class="font-semibold underline cursor-pointer hover:text-blue-600">
+               Home
+            </span>
+
+            <span>&gt;</span>
+
+            <span id="bcBrowse"
+                  class="font-semibold underline cursor-pointer hover:text-blue-600">
+               Browse
+            </span>
+
+            <span>&gt;</span>
+
+            <span id="bcProductName" class="font-semibold">
+               Product Name
+            </span>
+
+         </nav>
+
+
+
+         <!-- main product template here -->
+         <template id="singleProductTemplate">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+               <!-- left coloumn should show images -->
+               <div class="flex flex-col items-center gap-3 w-full">
+
+                  <!--main image-->
+                  <img id="mainPic"
+                     src="images/cards.jpg"
+                     alt="Main product image"
+                     class="w-full h-80 object-cover rounded-lg shadow" />
+
+                  <!-- Small card images (constant for all products) -->
+                  <div class="flex gap-3 justify-center">
+
+                     <img id="smallPic1"
+                        src="images/closeUp1.jpg"
+                        alt="Extra view 1"
+                        class="w-24 h-24 object-cover rounded border cursor-pointer hover:opacity-80 transition" />
+
+                     <img id="smallPic2"
+                        src="images/closeUp2.jpg"
+                        alt="Extra view 2"
+                        class="w-24 h-24 object-cover rounded border cursor-pointer hover:opacity-80 transition" />
+
+                     <img id="smallPic3"
+                        src="images/cards.jpg"
+                        alt="Extra view 3"
+                        class="w-24 h-24 object-cover rounded border cursor-pointer hover:opacity-80 transition" />
+                  </div>
+
+               </div>
+
+               <!-- right column- product details here -->
+               <div class="space-y-4">
+
+                  <h1 id="spName" class="text-2xl font-bold text-slate-800">
+                     Product Name
+                  </h1>
+
+                  <p id="spPrice" class="text-xl font-semibold text-blue-700">
+                     $0.00
+                  </p>
+
+                  <p id="spDescription" class="text-slate-700 text-sm leading-relaxed">
+                     Product description goes here.
+                  </p>
+
+                  <p id="spMaterial" class="text-slate-600 text-sm">
+                     Material: —
+                  </p>
+
+                  <!-- sizes -->
+                  <div>
+                     <p class="font-semibold text-slate-700 text-sm mb-1">Available Sizes</p>
+                     <div id="spSizes" class="flex flex-wrap gap-2 text-sm">
+                        <!-- Filled by JS -->
+                     </div>
+                  </div>
+
+                  <!--colors-->
+                  <div>
+                     <p class="font-semibold text-slate-700 text-sm mb-1">Available Colors</p>
+                     <div id="spColors" class="flex flex-wrap gap-2 text-sm">
+                        <!-- Filled by JS -->
+                     </div>
+                  </div>
+
+                  <!-- quantity selector -->
+                  <div>
+                     <p class="font-semibold text-slate-700 text-sm mb-1">Quantity</p>
+                     
+
+                     <div class="flex items-center gap-2">
+
+                        <!-- minus button -->
+                        <button 
+                           id="qtyMinus"
+                           class="w-8 h-8 flex items-center justify-center 
+                                 bg-slate-200 hover:bg-slate-300 rounded text-lg font-bold">
+                           -
+                        </button>
+
+                        <!-- number display -->
+                        <input 
+                           id="spQuantity"
+                           type="number" 
+                           value="1" 
+                           min="1" 
+                           class="w-14 border rounded p-1 text-center text-sm"
+                        />
+
+                        <!-- plus + button   -->
+                        <button 
+                           id="qtyPlus"
+                           class="w-8 h-8 flex items-center justify-center 
+                                 bg-slate-200 hover:bg-slate-300 rounded text-lg font-bold">
+                           +
+                        </button>
+
+                     </div>
+                  </div>
+
+
+                  <!-- ADD TO CART button -->
+                  <button id="spAddToCart"
+                        class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition">
+                     + Add to Cart
+                  </button>
+
+               </div>
+
+            </div>
+
+         </template>
+
+         <!-- single product div should be here- meaning insert the clones here -->
+         <div id="singleProductContainer">
+
+         </div>
+
+
+         <!-- related products section here -->
+         <h2 class="text-xl font-bold text-slate-800 mt-10 mb-4">
+            Related Products
+         </h2>
+
+         <div id="relatedProductsGrid"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <!-- will insert related product card here -->
+         </div>
+
+      </article>
+
+
+
+
+      <!-----------------------------------------------------------Shopping Cart View (initially hidden)------------------------------------------------>
+      <article id="cart" class="hidden px-4 py-6 max-w-6xl mx-auto space-y-6">
+
+      <!-- Page title -->
+      <h1 class="text-2xl font-bold text-slate-800 text-center">
+         Shopping Cart
+      </h1>
+
+      <!-- CART items HEADER and LIST -->
+      <section class="space-y-3">
+
+         <!-- Column headings -->
+         <div class="grid grid-cols-[auto,1fr,80px,70px,80px,110px,90px] 
+                     gap-4 text-xs font-semibold text-slate-600 border-b pb-2">
+            <span></span>
+            <span>Items</span>
+            <span class="text-center">Color</span>
+            <span class="text-center">Size</span>
+            <span class="text-center">Price</span>
+            <span class="text-center">Quantity</span>
+            <span class="text-right">Subtotal</span>
+         </div>
+
+         <!-- Where cart items will be inserted -->
+         <div id="cartItemsContainer" class="space-y-4">
+            <!-- will clone #cartItemTemplate here -->
+         </div>
+
+         <!-- Empty-cart message (code to hide this when there are items - through js) -->
+         <p id="cartEmptyMessage" class="text-slate-500 italic mt-2">
+            Your cart is currently empty.
+         </p>
+      </section>
+
+      <!-- TEMPLATE for a single cart-->
+      <template id="cartItemTemplate">
+         <div class="grid grid-cols-[auto,1fr,80px,70px,80px,110px,90px] 
+                     gap-4 items-center border-b pb-3">
+
+            <!-- Remove button (minus) -->
+            <button class="cartRemoveBtn w-7 h-7 flex items-center justify-center
+                           bg-slate-200 hover:bg-slate-300 rounded text-lg font-bold
+                           text-slate-700">
+            -
+            </button>
+
+            <!-- item info that has image and title -->
+            <div class="flex items-center gap-3">
+            <div class="w-16 h-20 bg-slate-200 rounded overflow-hidden">
+               <img src="" alt="" class="cartItemImg w-full h-full object-cover">
+            </div>
+            <div>
+               <p class="cartItemName text-sm font-semibold text-slate-800">
+                  Product Title
+               </p>
+               <p class="cartItemMeta text-xs text-slate-500">
+                   
+               </p>
+            </div>
+            </div>
+
+            <!-- little color box -->
+            <div class="flex items-center justify-center">
+            <div class="cartItemColorBox w-4 h-4 rounded border border-slate-300"
+                  title="Color">
+            </div>
+            </div>
+
+            <!-- Size -->
+            <p class="cartItemSize text-sm text-center">
+            XS
+            </p>
+
+            <!-- Price -->
+            <p class="cartItemPrice text-sm text-center">
+            $0.00
+            </p>
+
+            <!-- quantity here - to be selected -->
+            <div class="flex items-center justify-center gap-2">
+            <button class="cartQtyMinus w-6 h-6 flex items-center justify-center
+                           bg-slate-200 hover:bg-slate-300 rounded text-sm font-bold">
+               -
+            </button>
+            <span class="cartItemQty text-sm">
+               1
+            </span>
+            <button class="cartQtyPlus w-6 h-6 flex items-center justify-center
+                           bg-slate-200 hover:bg-slate-300 rounded text-sm font-bold">
+               +
+            </button>
+            </div>
+
+            <!-- suntotal -->
+            <p class="cartItemSubtotal text-sm text-right font-semibold text-slate-800">
+            $0.00
+            </p>
+         </div>
+      </template>
+
+      <!-- shipping and summary - will include templates here (template of every product selected? ) -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+
+         <!-- ahipping options on the left -->
+         <div class="space-y-4">
+            <h2 class="text-lg font-semibold text-slate-800">
+            Shipping
+            </h2>
+
+            <!-- Shipping method -->
+            <div>
+            <label for="shippingMethod"
+                     class="block text-sm font-semibold text-slate-700 mb-1">
+               Method
+            </label>
+            <select id="shippingMethod"
+                     class="w-full border rounded p-2 text-sm">
+               <option value="standard">Standard</option>
+               <option value="express">Express</option>
+               <option value="priority">Priority</option>
+            </select>
+            </div>
+
+            <!-- destinationn -->
+            <div>
+            <label for="shippingDestination"
+                     class="block text-sm font-semibold text-slate-700 mb-1">
+               Destination
+            </label>
+            <select id="shippingDestination"
+                     class="w-full border rounded p-2 text-sm">
+               <option value="CA">Canada</option>
+               <option value="US">United States</option>
+               <option value="INTL">International</option>
+            </select>
+            </div>
+         </div>
+
+         <!-- summary box on right -->
+         <div class="space-y-4">
+            <h2 class="text-lg font-semibold text-slate-800">
+            Summary
+            </h2>
+
+            <div class="border rounded-lg bg-slate-50 p-4 space-y-2 text-sm">
+            <div class="flex justify-between">
+               <span>Merchandise</span>
+               <span id="summaryMerchandise">$0.00</span>
+            </div>
+
+            <div class="flex justify-between">
+               <span>Shipping</span>
+               <span id="summaryShipping">$0.00</span>
+            </div>
+
+            <div class="flex justify-between">
+               <span>Tax</span>
+               <span id="summaryTax">$0.00</span>
+            </div>
+
+            <hr class="my-2">
+
+            <div class="flex justify-between font-semibold text-base">
+               <span>Total</span>
+               <span id="summaryTotal">$0.00</span>
+            </div>
+            </div>
+
+            <!-- Checkout -->
+            <button id="checkoutButton"
+                  class="w-full bg-blue-600 text-white font-semibold py-2 rounded
+                           hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+            Checkout
+            </button>
+
+            <!-- Small note when cart is empty - what should it be -->
+            <p id="checkoutNote" class="text-xs text-slate-500">
+            Free Shipping for orders above $500!
+            </p>
+         </div>
+
+      </section>
+
+      </article>
+
+
+
+
+      <!------ About View as a dialog - two ways to close the element in JS(will use same classes to close them), according to the instructions in screen (initially hidden as well) --------->
+      <dialog id="about" class="rounded-lg p-6 max-w-md w-full">
+
+            <!-- top right close button as X -->
+            <button id="aboutCloseX" class="aboutClose absolute top-2 right-2 text-slate-600 hover:text-slate-900 text-lg leading-none">
+                &times;
+            </button>
+
+            <!-- Content inside About pop up-->
+            <h2 class="text-xl font-semibold mb-3">About This Application</h2>
+            <p class="text-slate-700 mb-3 text-sm leading-relaxed">
+                This website is a simple single page application designed for browsing and viewing clothing
+                products online. The goal was to create a clean interface where users can explore items,
+                open a detailed view for each product, and manage a small shopping cart.
+            </p>
+            <p class="text-slate-700 mb-3 text-sm leading-relaxed">
+                The application was built using:
+            </p>
+                <ul class="text-slate-700 mb-3 text-sm list-disc pl-5 space-y-1">
+                <li>Visual Studio for development</li>
+                <li>Tailwind CSS for styling via CDN (There is no external CSS file).</li>
+                <li>JavaScript techniques learned throughout the labs and tutorials in this course. Many of
+                the functions and approaches in the JavaScript file are based on lab activities,
+                customized to support the specific functionality required for this assignment.</li>
+                </ul>
+            <br>
+            <p class="text-slate-700 mb-4 text-sm leading-relaxed">
+                <span class="font-semibold">Name:</span> Syed Muhammad Usman  
+                <br>
+                <span class="font-semibold">Section</span> Computer Information Systems
+                <br>   
+                This project has been completed individually by me.
+            </p>
+
+
+            <!-- bottom close button-->
+            <div class="flex justify-end">
+                <button id="aboutClose" class="aboutClose text-sm font-medium text-slate-700 hover:text-blue-600">
+                Close
+                </button>
+            </div>
+      </dialog>
+
+
+
+
+    </main>
+
+
+
+   <!-- toaster here (can use alert for now) -->
+   <div id="toastBox" class="fixed top-4 right-4 space-y-2 z-50"></div>
+
+
+
+
+
+
+   <!-- Footer - visible on all views -->
+   <footer class="bg-[#0a1a33] text-white">
+      <div class="max-w-6xl mx-auto px-4 py-3 text-sm text-slate-600 flex items-center justify-between text-white" id="footer">
+
+         <span>&copy; Clothing Product Website</span>
+         <a href = "https://github.com/susma960?tab=repositories" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400">
+           My GitHub Link
+         </a>
+
+      </div>
+   </footer>
+
+
+
+   <!-- Main JavaScript file -->
+   <script src="asg2script.js"></script>
+</body>
+
+</html>
